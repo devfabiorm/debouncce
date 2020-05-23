@@ -4,16 +4,9 @@ const filterUsers = async name =>
     fetch(`https://jsonplaceholder.typicode.com/users?name_like=${name}`)
         .then(res => res.json());
 
-function debounceEvent(fn, wait = 1000, time) {
-    
-    //closure
-    return function () { 
-        clearTimeout(time);
-        time = setTimeout(() => {
-            fn.apply(this, arguments);
-        }, wait)
-    }
-}
+const debounceEvent = (fn, wait = 1000, time) =>  (...args) =>
+        clearTimeout(time, time = setTimeout(() => fn(...args), wait));
+        
 
 function handleKeyUp(event) {
     filterUsers(event.target.value)
