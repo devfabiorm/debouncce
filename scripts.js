@@ -4,27 +4,21 @@ const filterUsers = async name =>
     fetch(`https://jsonplaceholder.typicode.com/users?name_like=${name}`)
         .then(res => res.json());
 
-
-
-function debounceEvent() {
-
-    let time = null;
-
+function debounceEvent(fn, wait = 1000, time) {
+    
     //closure
-    return function (value) {
+    return function () { 
         clearTimeout(time);
         time = setTimeout(() => {
-            filterUsers(value)
-                .then(users => console.log(users.map(user => user.name)));
-        }, 1000)
+            fn.apply(this, arguments);
+        }, wait)
     }
 }
 
-const debounce = debounceEvent();
-
 function handleKeyUp(event) {
-    debounce(event.target.value)
+    filterUsers(event.target.value)
+        .then(users => console.log(users.map(user => user.name)));
 }
 
 document.querySelector('input')
-    .addEventListener('keyup', handleKeyUp)
+    .addEventListener('keyup', debounceEvent(handleKeyUp, 500))
